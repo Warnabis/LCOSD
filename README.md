@@ -5,5 +5,5 @@
 + Язык интерфейса: Html
 
 + [SRS](docs/SRS.md)
-+ [Diagrams](docs/Diagrams.md)
++ [Diagrams](docs/Diagrams)
 
