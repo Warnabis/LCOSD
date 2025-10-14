@@ -10,10 +10,10 @@
 
 ![Вход в аккаунт](./Images/activities_login.png)
 
-### 2. Регистрация в приложении<a name="2"></a>
+### 2. Регистрация аккаунта<a name="2"></a>
 
-![Регистрация в приложении](https://github.com/DanutaGagua/Personal-film-collection-manager/blob/master/Diagrams/Images/ActivityDiagramSignUp.png)
+![Регистрация аккаунта](./Images/activities_reg.png)
   
-### 3. Добавление фильма<a name="3"></a>
+### 3. Просмотр избранных книг<a name="3"></a>
 
-![Добавление фильма](https://github.com/DanutaGagua/Personal-film-collection-manager/blob/master/Diagrams/Images/ActivityDiagramAddFilm.png)
+![Просмотр избранных книг](./Images/activities_favorites.png)
