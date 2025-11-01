@@ -138,7 +138,7 @@
 
 ## Представление результатов
 
-Результаты представлены  в документе ["Результаты тестирования"](https://github.com/Warnabis/LCOSD/edit/main/docs/Test%20results.md).
+Результаты представлены  в документе ["Результаты тестирования"](https://github.com/Warnabis/LCOSD/blob/main/docs/Test%20results.md).
 
 ---
 
