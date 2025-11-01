@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Регистрация — BookFinder</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background: #f9f9f9;
+        }
+
+        .auth-container {
+            max-width: 400px;
+            margin: 80px auto;
+            background: white;
+            padding: 30px 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            position: relative;
+            text-align: center;
+        }
+
+        .auth-container h1 {
+            color: #ff7f27;
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+
+        .auth-container h2 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .auth-container label {
+            display: block;
+            margin: 10px 0 5px;
+            text-align: left;
+        }
+
+        .auth-container input {
+            width: 100%;
+            padding: 8px 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+
+        .auth-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .auth-buttons .btn {
+            flex: 1;
+            padding: 10px;
+            background-color: #ff7f27;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .auth-container .error,
+        .auth-container .info {
+            text-align: center;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+
+        .auth-container .error { color: red; }
+        .auth-container .info { color: #555; }
+
+        .back-arrow {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #ff7f27;
+            text-decoration: none;
+        }
+
+        .back-arrow:hover {
+            opacity: 0.8;
+        }
+
+        .login-link {
+            margin-top: 15px;
+        }
+
+        .login-link a {
+            color: #ff7f27;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+<div class="auth-container">
+    <a href="/" class="back-arrow">&#8592;</a>
+    <h1>BookFinder</h1>
+    <h2>Регистрация</h2>
+    <form th:action="@{/register}" method="post">
+        <label for="username">Имя пользователя:</label>
+        <input type="text" id="username" name="username" required>
+
+        <label for="password">Пароль:</label>
+        <input type="password" id="password" name="password" required>
+
+        <label for="confirm-password">Повторите пароль:</label>
+        <input type="password" id="confirm-password" name="confirmPassword" required>
+
+        <div class="auth-buttons">
+            <button type="submit" class="btn">Создать аккаунт</button>
+        </div>
+
+        <p th:if="${error}" class="error" th:text="${error}"></p>
+
+        <div class="login-link">
+            Уже есть аккаунт? <a href="/login">Войдите!</a>
+        </div>
+    </form>
+</div>
+
+</body>
+</html>

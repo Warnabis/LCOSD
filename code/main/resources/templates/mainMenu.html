@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>BookFinder — Главное меню</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background: #f9f9f9;
+        }
+
+        header {
+            background: #ff7f27;
+            color: white;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .search-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            background: white;
+            border-radius: 6px;
+            padding: 5px 10px;
+            gap: 10px;
+        }
+
+        .search-box input[type="text"] {
+            width: 250px;
+            padding: 6px 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .search-box select {
+            padding: 6px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background: white;
+            cursor: pointer;
+        }
+
+        .burger {
+            font-size: 26px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            color: white;
+        }
+
+        .sidebar {
+            height: 100%;
+            width: 0;
+            position: fixed;
+            top: 0;
+            right: 0;
+            background-color: #fff;
+            box-shadow: -2px 0 10px rgba(0,0,0,0.2);
+            overflow-x: hidden;
+            transition: 0.3s;
+            padding-top: 60px;
+            z-index: 1000;
+        }
+
+        .sidebar.open {
+            width: 280px;
+        }
+
+        .sidebar .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 24px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            color: #333;
+        }
+
+        .sidebar-content {
+            padding: 20px;
+        }
+
+        .sidebar-content p {
+            margin: 10px 0;
+            text-decoration: none;
+            color: #333;
+        }
+
+        .sidebar-content button,
+        .sidebar-content a button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin-top: 20px;
+            border: none;
+            background-color: #ff7f27;
+            color: white;
+            border-radius: 6px;
+            cursor: pointer;
+            text-align: center;
+            font-size: 16px;
+            text-decoration: none !important;
+        }
+
+        .sidebar-content a {
+            text-decoration: none !important;
+            color: inherit;
+        }
+
+
+        main {
+            padding: 30px;
+        }
+
+        .book-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .book {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            padding: 12px 16px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .book:hover {
+            background: #f0f0f0;
+        }
+
+        .book-info {
+            flex-grow: 1;
+        }
+
+        .book h3 {
+            margin: 0 0 5px 0;
+        }
+
+        .book p {
+            margin: 2px 0;
+            color: #555;
+        }
+
+        .favorite-btn {
+            background: none;
+            border: none;
+            font-size: 22px;
+            cursor: pointer;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .favorite-btn::before {
+            content: '☆';
+            color: #ccc;
+        }
+
+        .favorite-btn.active::before {
+            content: '★';
+            color: gold;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <div class="logo">BookFinder</div>
+    <div class="search-container">
+        <div class="search-box">
+            <input type="text" id="search-input" placeholder="Поиск книги..." />
+            <select id="search-type">
+                <option value="title">По названию</option>
+                <option value="author">По автору</option>
+            </select>
+        </div>
+    </div>
+    <button class="burger" id="burger-btn">&#9776;</button>
+</header>
+
+<div class="sidebar" id="sidebar">
+    <button class="close-btn" id="close-btn">&times;</button>
+
+    <div class="sidebar-content" th:if="${isAuthenticated}">
+        <p><strong th:text="${username}">Имя пользователя</strong></p>
+        <a th:href="@{/favorites}"><button>Избранные книги</button></a>
+        <form id="logout-form" action="/logout" method="post">
+            <button type="submit">Выйти</button>
+        </form>
+    </div>
+
+    <div class="sidebar-content" th:if="${!isAuthenticated}">
+        <p>Избранные книги доступны только для авторизованных пользователей</p>
+        <a th:href="@{/login}"><button>Войти</button></a>
+    </div>
+</div>
+
+<main>
+    <h2>Список книг</h2>
+    <div class="book-list" id="book-list">
+        <div class="book" th:each="book : ${books}"
+             th:data-title="${book.title}"
+             th:data-author="${book.author}"
+             th:data-id="${book.id}"
+             th:data-favorite="${book.favorite}">
+            <div class="book-info" onclick="window.location.href='/books/' + this.parentElement.dataset.id">
+                <h3 th:text="${book.title != null ? book.title : 'Без названия'}">Название книги</h3>
+                <p th:text="'Автор: ' + (${book.author != null ? book.author : 'Не указан'})"></p>
+                <p th:text="'Жанр: ' + (${book.genre != null ? book.genre : 'Не указан'})"></p>
+            </div>
+            <button th:if="${isAuthenticated}"
+                    th:class="${book.favorite} ? 'favorite-btn active' : 'favorite-btn'"
+                    th:attr="data-id=${book.id}"></button>
+        </div>
+    </div>
+</main>
+
+<script>
+    const sidebar = document.getElementById("sidebar");
+    const burgerBtn = document.getElementById("burger-btn");
+    const closeBtn = document.getElementById("close-btn");
+
+    burgerBtn.onclick = () => sidebar.classList.add("open");
+    closeBtn.onclick = () => sidebar.classList.remove("open");
+    window.onclick = (event) => {
+        if (!event.target.closest('#sidebar') && !event.target.closest('#burger-btn')) {
+            sidebar.classList.remove('open');
+        }
+    };
+
+    const searchInput = document.getElementById('search-input');
+    const searchType = document.getElementById('search-type');
+    const bookList = document.getElementById('book-list');
+
+    function filterBooks() {
+        const query = searchInput.value.toLowerCase();
+        const type = searchType.value;
+        const books = bookList.querySelectorAll('.book');
+
+        books.forEach(book => {
+            const title = book.dataset.title?.toLowerCase() || '';
+            const author = book.dataset.author?.toLowerCase() || '';
+            let match = false;
+
+            if (type === 'title') match = title.includes(query);
+            else if (type === 'author') match = author.includes(query);
+
+            book.style.display = match ? 'flex' : 'none';
+        });
+    }
+
+    searchInput.addEventListener('input', filterBooks);
+    searchType.addEventListener('change', filterBooks);
+
+    // Клик по звездочке с обновлением избранного
+    bookList.addEventListener('click', (e) => {
+        if (e.target.classList.contains('favorite-btn')) {
+            e.stopPropagation();
+            const btn = e.target;
+            const bookId = btn.dataset.id;
+
+            fetch(`/books/${bookId}/favorite`, { method: "POST" })
+                .then(resp => resp.text())
+                .then(status => {
+                    if (status === "added") btn.classList.add("active");
+                    else if (status === "removed") btn.classList.remove("active");
+                })
+                .catch(() => alert('Ошибка при соединении с сервером'));
+        }
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${book.title}">Книга</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f9f9f9;
+            margin: 0;
+        }
+
+        header {
+            background: #ff7f27;
+            color: white;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .book-container {
+            max-width: 600px;
+            margin: 40px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            margin-top: 0;
+            font-size: 28px;
+        }
+
+        p {
+            margin: 10px 0;
+            color: #333;
+        }
+
+        .favorite-btn {
+            background-color: #ff7f27;
+            border: none;
+            color: white;
+            font-size: 16px;
+            padding: 10px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+
+        .login-note {
+            margin-top: 15px;
+            color: #555;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+
+<header onclick="window.location.href='/'">
+    <div class="logo">BookFinder</div>
+</header>
+
+<div class="book-container">
+    <h1 th:text="${book.title}">Название книги</h1>
+    <p><strong>Автор:</strong> <span th:text="${book.author}">Автор</span></p>
+    <p><strong>Жанр:</strong> <span th:text="${book.genre}">Жанр</span></p>
+    <p><strong>Описание:</strong></p>
+    <p th:text="${book.description}">Описание книги</p>
+
+    <div th:if="${isAuthenticated}">
+        <button id="favorite-btn" class="favorite-btn"
+                th:attr="data-id=${book.id}, data-favorite=${isFavorite}">
+
+        </button>
+    </div>
+
+    <div th:if="${!isAuthenticated}" class="login-note">
+        Войдите в аккаунт, чтобы добавить в избранное
+    </div>
+</div>
+
+<script>
+    const favBtn = document.getElementById("favorite-btn");
+    if (favBtn) {
+
+        const isFavorite = favBtn.getAttribute("data-favorite") === "true";
+        favBtn.textContent = isFavorite ? "Убрать из избранного" : "Добавить в избранное";
+
+        favBtn.addEventListener("click", () => {
+            const bookId = favBtn.getAttribute("data-id");
+            fetch(`/books/${bookId}/favorite`, { method: "POST" })
+                .then(resp => resp.text())
+                .then(status => {
+                    if (status === "added") {
+                        favBtn.textContent = "Убрать из избранного";
+                        favBtn.setAttribute("data-favorite", "true");
+                    } else if (status === "removed") {
+                        favBtn.textContent = "Добавить в избранное";
+                        favBtn.setAttribute("data-favorite", "false");
+                    }
+                })
+                .catch(() => alert('Ошибка при соединении с сервером'));
+        });
+    }
+</script>
+
+</body>
+</html>
